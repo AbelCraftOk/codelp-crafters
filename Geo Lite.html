@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Geo Lite - Aventura Geométrica</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+      color: #e94560;
+      overflow: hidden;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      position: relative;
+    }
+    h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 5em;
+      text-shadow: 0 0 10px #e94560, 0 0 20px #e94560, 0 0 30px #e94560;
+      margin-bottom: 30px;
+      animation: pulsate 1.5s infinite alternate;
+    }
+    @keyframes pulsate {
+      0% { transform: scale(1); text-shadow: 0 0 10px #e94560, 0 0 20px #e94560, 0 0 30px #e94560; }
+      100% { transform: scale(1.05); text-shadow: 0 0 20px #e94560, 0 0 30px #e94560, 0 0 40px #e94560; }
+    }
+    button {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.5em;
+      padding: 20px 40px;
+      margin: 15px;
+      border: none;
+      border-radius: 50px;
+      background: linear-gradient(45deg, #e94560, #0f3460);
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(233, 69, 96, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+    button:before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: rgba(255,255,255,0.1);
+      transform: rotate(45deg);
+      transition: all 0.3s ease;
+    }
+    button:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(233, 69, 96, 0.6);
+    }
+    button:hover:before {
+      left: -100%;
+      top: -100%;
+    }
+    #juego {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: none;
+    }
+    canvas {
+      display: block;
+      margin: auto;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border: 3px solid #e94560;
+      box-shadow: 0 0 30px #e94560, 0 0 50px #e94560;
+      border-radius: 10px;
+    }
+    #creditos, #perder {
+      display: none;
+      text-align: center;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(15, 52, 96, 0.8);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 0 40px rgba(233, 69, 96, 0.8);
+    }
+    p {
+      font-size: 1.3em;
+      margin: 15px 0;
+      text-shadow: 0 0 5px #e94560;
+    }
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+    .particle {
+      position: absolute;
+      background: #e94560;
+      border-radius: 50%;
+      opacity: 0.5;
+      animation: float 5s infinite ease-in-out;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+    #score {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 2em;
+      font-family: 'Orbitron', sans-serif;
+      color: #e94560;
+      text-shadow: 0 0 10px #e94560;
+    }
+  </style>
+</head>
+<body>
+  <div class="particles" id="particles"></div>
+  <div class="container">
+    <!-- Página 1: INICIO -->
+    <div id="inicio">
+      <h1>Geo Lite</h1>
+      <button onclick="irAJuego()">JUGAR</button>
+      <button onclick="irACreditos()">Créditos</button>
+    </div>
+
+    <!-- Página 2: JUEGO -->
+    <div id="juego">
+      <canvas id="lienzo" width="800" height="400"></canvas>
+      <div id="score">Puntuación: 0</div>
+    </div>
+
+    <!-- Página 3: CREDITOS -->
+    <div id="creditos">
+      <h1>CRÉDITOS</h1>
+      <p>Desarrollado por Pedro Ojeda x Open AI</p>
+      <p>Teléfono: +54 221 598-9210</p>
+      <p>Correo: pedrogabrielojeda664@gmail.com</p>
+      <p>Powered by Open AI</p>
+      <button onclick="irAOpenAI()">Visitar Open AI</button>
+      <button onclick="mostrarPagina('inicio')">Volver al Inicio</button>
+    </div>
+
+    <!-- Página 4: PERDER -->
+    <div id="perder">
+      <h1 style="color: #ff4757;">¡Has perdido!</h1>
+      <p id="puntuacionFinal"></p>
+      <button onclick="reintentar()">REINTENTAR</button>
+    </div>
+  </div>
+
+  <script>
+    // Variables del juego
+    let canvas, ctx;
+    let jugador;
+    let obstaculos = [];
+    let juegoActivo = false;
+    let intervaloJuego;
+    let puntuacion = 0;
+
+    // Función para iniciar el juego
+    function iniciarJuego() {
+      canvas = document.getElementById('lienzo');
+      ctx = canvas.getContext('2d');
+      jugador = {
+        x: 50,
+        y: canvas.height / 2,
+        altura: 40,
+        anchura: 40,
+        velocidadY: 0
+      };
+
+      puntuacion = 0;
+      actualizarPuntuacion();
+
+      // Iniciar intervalo de juego
+      intervaloJuego = setInterval(actualizarJuego, 1000 / 60);
+
+      // Event listener para teclas
+      document.addEventListener('keydown', function(event) {
+        if (event.key === 'w' || event.key === 'ArrowUp') {
+          jugador.velocidadY = -8;
+        } else if (event.key === 's' || event.key === 'ArrowDown') {
+          jugador.velocidadY = 8;
+        }
+      });
+
+      document.addEventListener('keyup', function(event) {
+        if ((event.key === 'w' || event.key === 'ArrowUp' || event.key === 's' || event.key === 'ArrowDown') && jugador.velocidadY !== 0) {
+          jugador.velocidadY = 0;
+        }
+      });
+    }
+
+    // Función para actualizar el juego
+    function actualizarJuego() {
+      // Limpiar lienzo
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Mover jugador
+      jugador.y += jugador.velocidadY;
+
+      // Mantener al jugador dentro del canvas
+      if (jugador.y < 0) jugador.y = 0;
+      if (jugador.y + jugador.altura > canvas.height) jugador.y = canvas.height - jugador.altura;
+
+      // Dibujar jugador
+      ctx.fillStyle = '#e94560';
+      ctx.beginPath();
+      ctx.moveTo(jugador.x, jugador.y + jugador.altura / 2);
+      ctx.lineTo(jugador.x + jugador.anchura, jugador.y);
+      ctx.lineTo(jugador.x + jugador.anchura, jugador.y + jugador.altura);
+      ctx.closePath();
+      ctx.fill();
+
+      // Generar obstáculos
+      if (Math.random() < 0.02) {
+        generarObstaculo();
+      }
+
+      // Mover y dibujar obstáculos
+      for (let i = 0; i < obstaculos.length; i++) {
+        obstaculos[i].x -= 6;
+        ctx.fillStyle = '#0f3460';
+        ctx.beginPath();
+        ctx.arc(obstaculos[i].x + obstaculos[i].radio, obstaculos[i].y + obstaculos[i].radio, obstaculos[i].radio, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Detectar colisión
+        let dx = jugador.x + jugador.anchura / 2 - (obstaculos[i].x + obstaculos[i].radio);
+        let dy = jugador.y + jugador.altura / 2 - (obstaculos[i].y + obstaculos[i].radio);
+        let distancia = Math.sqrt(dx * dx + dy * dy);
+
+        if (distancia < jugador.anchura / 2 + obstaculos[i].radio) {
+          clearInterval(intervaloJuego);
+          mostrarPagina('perder');
+          document.getElementById('puntuacionFinal').innerText = `Puntuación final: ${puntuacion}`;
+          return;
+        }
+      }
+
+      // Eliminar obstáculos fuera de la pantalla
+      obstaculos = obstaculos.filter(obstaculo => obstaculo.x + obstaculo.radio * 2 > 0);
+
+      // Aumentar puntuación
+      puntuacion++;
+      actualizarPuntuacion();
+    }
+
+    // Función para generar obstáculos
+    function generarObstaculo() {
+      const obstaculo = {
+        x: canvas.width,
+        y: Math.random() * (canvas.height - 50),
+        radio: Math.random() * 20 + 20
+      };
+      obstaculos.push(obstaculo);
+    }
+
+    // Función para actualizar la puntuación
+    function actualizarPuntuacion() {
+      document.getElementById('score').innerText = `Puntuación: ${puntuacion}`;
+    }
+
+    // Función para mostrar página
+    function mostrarPagina(pagina) {
+      document.getElementById('inicio').style.display = 'none';
+      document.getElementById('juego').style.display = 'none';
+      document.getElementById('creditos').style.display = 'none';
+      document.getElementById('perder').style.display = 'none';
+      document.getElementById(pagina).style.display = 'block';
+    }
+
+    // Funciones de navegación
+    function irAJuego() {
+      iniciarJuego();
+      mostrarPagina('juego');
+    }
+
+    function irACreditos() {
+      mostrarPagina('creditos');
+    }
+
+    function irAOpenAI() {
+      window.open('https://chat.openai.com/', '_blank');
+    }
+
+    function reintentar() {
+      mostrarPagina('inicio');
+    }
+
+    // Crear partículas
+    function crearParticulas() {
+      const particlesContainer = document.getElementById('particles');
+      for (let i = 0; i < 50; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        particle.style.width = Math.random() * 5 + 'px';
+        particle.style.height = particle.style.width;
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        particle.style.animationDuration = Math.random() * 2 + 3 + 's';
+        particle.style.animationDelay = Math.random() * 5 + 's';
+        particlesContainer.appendChild(particle);
+      }
+    }
+
+    crearParticulas();
+  </script>
+</body>
+</html>
+    

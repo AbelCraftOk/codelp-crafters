@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Código QR</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: 20px auto;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"],
+        input[type="url"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        h2 {
+            text-align: center;
+            margin-top: 30px;
+        }
+        pre {
+            background: #eaeaea;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Generador de Código QR</h1>
+    
+    <p>Si buscas crear un código QR pero tienes miedo de que la aplicación te descargue un virus en tu dispositivo. Este código HTML te generará un código que te generará un código QR a la página que tú quieras.</p>
+
+    <form id="qrForm">
+        <label for="nombreArchivo">El código QR se guardará como:</label>
+        <input type="text" id="nombreArchivo" name="nombreArchivo" required><br><br>
+
+        <label for="urlDestino">El código QR llevará a la página:</label>
+        <input type="url" id="urlDestino" name="urlDestino" required><br><br>
+
+        <button type="submit">Generar Código QR</button>
+    </form>
+
+    <h2>Resultado final de tu código:</h2>
+    <pre id="codigoGenerado"></pre>
+    <button id="copiarCodigo" style="display:none;">Copiar Código al Portapapeles</button>
+    
+    <script>
+        document.getElementById('qrForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const nombreArchivo = document.getElementById('nombreArchivo').value;
+            const urlDestino = document.getElementById('urlDestino').value;
+
+            const codigoPython = `import qrcode
+url = "${urlDestino}"
+
+qr = qrcode.QRCode(version=1, box_size=25, border=5)
+
+qr.add_data(url)
+qr.make(fit=True)
+
+imagen = qr.make_image(fill="black", back_color="white")
+imagen.save("C:\\\\Users\\\\AbelCraftOk\\\\Desktop\\\\${nombreArchivo}.png")
+print("El código QR ha sido guardado en el Escritorio como '${nombreArchivo}.png'")`;
+
+            document.getElementById('codigoGenerado').textContent = codigoPython;
+            document.getElementById('copiarCodigo').style.display = 'block'; // Mostrar el botón
+        });
+
+        document.getElementById('copiarCodigo').addEventListener('click', function() {
+            const codigo = document.getElementById('codigoGenerado').textContent;
+            navigator.clipboard.writeText(codigo).then(() => {
+                alert('Código copiado al portapapeles!');
+            }).catch(err => {
+                console.error('Error al copiar el código: ', err);
+            });
+        });
+    </script>
+</body>
+</html>

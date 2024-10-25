@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tablero Interactivo de Tiempo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            width: 90%;
+            max-width: 600px;
+        }
+        .tab {
+            display: none;
+        }
+        .tab.active {
+            display: block;
+        }
+        .tab-buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+        .tab-buttons button {
+            padding: 12px 24px;
+            cursor: pointer;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 16px;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+        }
+        .tab-buttons button:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        .tab-content {
+            padding: 20px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 300;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 8px;
+            color: white;
+        }
+        .timer-controls button, .score-controls button {
+            margin: 5px;
+            padding: 10px 15px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .timer-controls button:hover, .score-controls button:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        .scoreboard {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        .scoreboard span {
+            font-size: 28px;
+            font-weight: 700;
+        }
+        #tiempo {
+            font-size: 48px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="tab-buttons">
+            <button onclick="showTab('login')">Configuración</button>
+            <button onclick="showTab('tablero')">Tablero</button>
+        </div>
+
+        <div id="login" class="tab active">
+            <div class="tab-content">
+                <div class="input-group">
+                    <label for="equipo1">Nombre del equipo 1</label>
+                    <input type="text" id="equipo1" placeholder="Ingrese nombre del equipo 1">
+                </div>
+                <div class="input-group">
+                    <label for="equipo2">Nombre del equipo 2</label>
+                    <input type="text" id="equipo2" placeholder="Ingrese nombre del equipo 2">
+                </div>
+                <button onclick="guardarNombres()">Guardar Nombres</button>
+            </div>
+        </div>
+
+        <div id="tablero" class="tab">
+            <div class="tab-content">
+                <div class="input-group">
+                    <label for="cuentaAtras">Tiempo restante (segundos):</label>
+                    <input type="text" id="cuentaAtras" value="600" disabled>
+                </div>
+                <div class="timer-controls">
+                    <button onclick="modificarTiempo(10)">+10s</button>
+                    <button onclick="modificarTiempo(60)">+1m</button>
+                    <button onclick="modificarTiempo(600)">+10m</button>
+                    <button onclick="iniciarCuentaAtras()">INICIAR</button>
+                    <button onclick="pausarCuentaAtras()">PAUSAR</button>
+                </div>
+                <div class="scoreboard">
+                    <span id="equipo1Display">Equipo 1</span>
+                    <span id="puntaje1">0</span>
+                    <span id="tiempo">10:00</span>
+                    <span id="puntaje2">0</span>
+                    <span id="equipo2Display">Equipo 2</span>
+                </div>
+                <div class="score-controls">
+                    <button onclick="incrementarPuntaje(1)">+1 Equipo 1</button>
+                    <button onclick="incrementarPuntaje(2)">+1 Equipo 2</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let equipo1 = "Equipo 1";
+        let equipo2 = "Equipo 2";
+        let puntaje1 = 0;
+        let puntaje2 = 0;
+        let cuentaAtras = 600;
+        let intervalo;
+
+        function showTab(tabId) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        function guardarNombres() {
+            equipo1 = document.getElementById('equipo1').value || "Equipo 1";
+            equipo2 = document.getElementById('equipo2').value || "Equipo 2";
+            document.getElementById('equipo1Display').innerText = equipo1;
+            document.getElementById('equipo2Display').innerText = equipo2;
+            alert("Nombres guardados");
+        }
+
+        function modificarTiempo(segundos) {
+            cuentaAtras += segundos;
+            actualizarTiempoDisplay();
+        }
+
+        function iniciarCuentaAtras() {
+            if (intervalo) clearInterval(intervalo);
+            intervalo = setInterval(() => {
+                if (cuentaAtras > 0) {
+                    cuentaAtras--;
+                    actualizarTiempoDisplay();
+                } else {
+                    clearInterval(intervalo);
+                    alert("¡Tiempo finalizado!");
+                }
+            }, 1000);
+        }
+
+        function pausarCuentaAtras() {
+            clearInterval(intervalo);
+        }
+
+        function actualizarTiempoDisplay() {
+            const minutos = Math.floor(cuentaAtras / 60);
+            const segundos = cuentaAtras % 60;
+            document.getElementById('tiempo').innerText = `${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
+            document.getElementById('cuentaAtras').value = cuentaAtras;
+        }
+
+        function incrementarPuntaje(equipo) {
+            if (equipo === 1) {
+                puntaje1++;
+                document.getElementById('puntaje1').innerText = puntaje1;
+            } else if (equipo === 2) {
+                puntaje2++;
+                document.getElementById('puntaje2').innerText = puntaje2;
+            }
+        }
+    </script>
+</body>
+</html>
+    
