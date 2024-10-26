@@ -90,7 +90,11 @@
     let currentNumber = 5;
 
     function guess(choice) {
-        let newNumber = Math.floor(Math.random() * 10) + 1;
+        let newNumber;
+        do {
+            newNumber = Math.floor(Math.random() * 10) + 1;
+        } while (newNumber === currentNumber); // Asegura que el nuevo número no sea igual al actual
+
         let numberDisplay = document.getElementById("current_number");
         numberDisplay.style.transform = "scale(1.1)";
         numberDisplay.innerText = newNumber;
@@ -125,4 +129,3 @@
 
 </body>
 </html>
-    
