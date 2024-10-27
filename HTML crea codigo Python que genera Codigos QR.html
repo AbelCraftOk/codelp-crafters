@@ -95,8 +95,8 @@ qr.add_data(url)
 qr.make(fit=True)
 
 imagen = qr.make_image(fill="black", back_color="white")
-imagen.save("C:\\\\Users\\\\AbelCraftOk\\\\Desktop\\\\${nombreArchivo}.png")
-print("El código QR ha sido guardado en el Escritorio como '${nombreArchivo}.png'")`;
+imagen.save("${nombreArchivo}.png")  # Cambiar la ruta a una relativa
+print("El código QR ha sido guardado como '${nombreArchivo}.png'")`;
 
             document.getElementById('codigoGenerado').textContent = codigoPython;
             document.getElementById('copiarCodigo').style.display = 'block'; // Mostrar el botón
