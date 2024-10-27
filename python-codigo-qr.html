@@ -110,6 +110,7 @@
             const urlDestino = document.getElementById('urlDestino').value;
 
             const codigoPython = `import qrcode
+import os  # Importar el módulo os
 url = "${urlDestino}"
 
 qr = qrcode.QRCode(version=1, box_size=25, border=5)
@@ -118,8 +119,10 @@ qr.add_data(url)
 qr.make(fit=True)
 
 imagen = qr.make_image(fill="black", back_color="white")
-imagen.save("${nombreArchivo}.png")  # Cambiar la ruta a una relativa
-print("El código QR ha sido guardado como '${nombreArchivo}.png'")`;
+# Usar os.path.join para construir la ruta correctamente
+ruta_guardado = os.path.join(os.path.expanduser("~"), "Desktop", "${nombreArchivo}.png")
+imagen.save(ruta_guardado)  # Guardar la imagen en la ruta correcta
+print("El código QR ha sido guardado como '${nombreArchivo}.png' en el escritorio")`;
 
             document.getElementById('codigoGenerado').textContent = codigoPython;
             document.getElementById('copiarCodigo').style.display = 'block'; // Mostrar el botón
