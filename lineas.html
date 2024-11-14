@@ -117,7 +117,7 @@
 
     <!-- Game Screen -->
     <div id="game-screen" class="container">
-        <button class="button" style="background-color: #ff4c4c; color: white;" onclick="endGame()">Abandonar Partida</button>
+        <button id="end-button" class="button" style="background-color: #ff4c4c; color: white;" onclick="endGame()">Abandonar Partida</button>
         <div id="lives" class="status-bar">Vidas: <span id="lives-count">50</span> ❤️</div>
         <div id="game-grid" class="game-grid"></div>
         <div class="status-bar" id="hints">Pistas: <span id="hints-content">-</span></div>
@@ -138,28 +138,37 @@
     <script>
         let selectedSquare;
         let lives = 20;
+        let gridSize;
 
         function goToSelection() {
-            document.getElementById('start-screen').style.display = 'none';
+            hideAllScreens();
             document.getElementById('selection-screen').style.display = 'flex';
         }
 
         function startRandomGame() {
+            hideAllScreens();
             setupGame('normal', 8);
-            document.getElementById('start-screen').style.display = 'none';
             document.getElementById('game-screen').style.display = 'flex';
         }
 
         function startGame() {
             const difficulty = document.getElementById('difficulty-select').value;
             const size = parseInt(document.getElementById('size-select').value);
+            hideAllScreens();
             setupGame(difficulty, size);
-            document.getElementById('selection-screen').style.display = 'none';
             document.getElementById('game-screen').style.display = 'flex';
+        }
+
+        function hideAllScreens() {
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('selection-screen').style.display = 'none';
+            document.getElementById('game-screen').style.display = 'none';
+            document.getElementById('game-over-screen').style.display = 'none';
         }
 
         function setupGame(difficulty, size) {
             const grid = document.getElementById('game-grid');
+            gridSize = size;
             grid.style.gridTemplateColumns = `repeat(${size}, 40px)`;
             grid.innerHTML = '';
             selectedSquare = Math.floor(Math.random() * size * size);
@@ -182,7 +191,7 @@
             if (index === selectedSquare) {
                 document.querySelectorAll('.square')[index].style.backgroundColor = 'green';
                 alert('¡Ganaste! Has encontrado el cuadradito especial 🎉');
-                goToStart();
+                handleWin();
             } else {
                 lives--;
                 document.getElementById('lives-count').textContent = lives;
@@ -197,23 +206,65 @@
                     square.style.backgroundColor = 'black'; // No coincide ni fila ni columna
                 }
 
-                if (lives <= 0) endGame();
+                if (lives <= 0) endGame(false);
             }
         }
 
-        function endGame() {
-            document.getElementById('game-screen').style.display = 'none';
+        function handleWin() {
+            revealAllSquares(true);
+            const endButton = document.getElementById('end-button');
+            endButton.textContent = 'Volver al inicio';
+            endButton.style.backgroundColor = '#4caf50';
+            endButton.onclick = goToStart;
+        }
+
+        function endGame(won = false) {
+            revealAllSquares(won);
+            const endButton = document.getElementById('end-button');
+            if (!won) {
+                const squares = document.querySelectorAll('.square');
+                squares[selectedSquare].style.backgroundColor = 'red'; // Cuadradito especial en rojo si perdiste
+            }
+            hideAllScreens();
             document.getElementById('game-over-screen').style.display = 'flex';
         }
 
+        function revealAllSquares(won) {
+            const squares = document.querySelectorAll('.square');
+            const selectedRow = Math.floor(selectedSquare / gridSize);
+            const selectedCol = selectedSquare % gridSize;
+
+            squares.forEach((square, index) => {
+                const row = Math.floor(index / gridSize);
+                const col = index % gridSize;
+
+                if (col === selectedCol) {
+                    square.style.backgroundColor = 'yellow';
+                } else if (row === selectedRow) {
+                    square.style.backgroundColor = 'darkblue';
+                } else {
+                    square.style.backgroundColor = 'black';
+                }
+            });
+
+            // Marcar donde estaba el cuadradito especial
+            if (won) {
+                squares[selectedSquare].style.backgroundColor = 'green'; // Verde si ganó
+            } else {
+                squares[selectedSquare].style.backgroundColor = 'red'; // Rojo si no ganó
+            }
+        }
+
         function goToStart() {
-            document.getElementById('game-over-screen').style.display = 'none';
+            hideAllScreens();
             document.getElementById('start-screen').style.display = 'flex';
         }
 
+        // Mostrar la pantalla de inicio al cargar la página
         window.onload = () => {
             document.getElementById('start-screen').style.display = 'flex';
         };
     </script>
+
 </body>
 </html>
