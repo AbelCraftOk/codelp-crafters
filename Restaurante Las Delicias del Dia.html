@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurante Las Delicias del Día</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .header {
+            background-color: #FF6B6B;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .tab {
+            overflow: hidden;
+            background-color: #4ECDC4;
+            display: flex;
+            justify-content: center;
+        }
+        .tab button {
+            background-color: inherit;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+            color: white;
+        }
+        .tab button:hover {
+            background-color: #45b7a7;
+        }
+        .tab button.active {
+            background-color: #45b7a7;
+            font-weight: bold;
+        }
+        .tabcontent {
+            display: none;
+            padding: 20px;
+            border-top: none;
+            animation: fadeEffect 1s;
+        }
+        @keyframes fadeEffect {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
+        .inicio-btn {
+            background-color: #FF6B6B;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .inicio-btn:hover {
+            background-color: #ff5252;
+        }
+        .carrito-icono {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            background-color: #FF6B6B;
+            color: white;
+            border-radius: 50%;
+            padding: 10px;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .carrito-contenido {
+            display: none;
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background-color: white;
+            border-radius: 5px;
+            padding: 20px;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 300px;
+        }
+        .boton-comprar {
+            background-color: #4ECDC4;
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: background-color 0.3s;
+        }
+        .boton-comprar:hover {
+            background-color: #45b7a7;
+        }
+        .menu-item {
+            background-color: white;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .menu-item h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+        .menu-item p {
+            margin: 5px 0 0;
+            color: #666;
+        }
+        form input[type="text"], form input[type="tel"], form input[type="email"], form input[type="number"], form textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        form input[type="submit"] {
+            background-color: #FF6B6B;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        form input[type="submit"]:hover {
+            background-color: #ff5252;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Las Delicias del Día</h1>
+    </div>
+
+    <div class="tab">
+        <button class="tablinks" onclick="openTab(event, 'Inicio')">Inicio</button>
+        <button class="tablinks" onclick="openTab(event, 'Menu')">Menú</button>
+        <button class="tablinks" onclick="openTab(event, 'PedirDomicilio')">Pedir a domicilio</button>
+        <button class="tablinks" onclick="openTab(event, 'PedirMesa')">Pedir a la mesa</button>
+    </div>
+
+    <div class="carrito-icono" onclick="toggleCarrito()">🛒</div>
+    <div id="carrito-contenido" class="carrito-contenido">
+        <h3>Carrito de Compras</h3>
+        <ul id="lista-carrito"></ul>
+        <p>Total: $<span id="total-carrito">0</span></p>
+        <button onclick="hacerPedido()" class="boton-comprar">Hacer el Pedido</button>
+    </div>
+
+    <div id="Inicio" class="tabcontent">
+        <h2>Bienvenido a Las Delicias del Día</h2>
+        <p>Disfruta de nuestra deliciosa comida y excelente servicio.</p>
+        <button class="inicio-btn" onclick="openTab(event, 'Menu')">Ver Menú</button>
+        <button class="inicio-btn" onclick="openTab(event, 'PedirDomicilio')">Pedir a domicilio</button>
+        <button class="inicio-btn" onclick="openTab(event, 'PedirMesa')">Reservar mesa</button>
+    </div>
+
+    <div id="Menu" class="tabcontent">
+        <h2>Nuestro Menú</h2>
+        <p>Descubre nuestras deliciosas opciones:</p>
+        <div id="categoriaSelector">
+            <label for="categoria">Seleccione una categoría:</label>
+            <select id="categoria" onchange="mostrarCategoria()">
+                <option value="">Seleccione...</option>
+                <option value="platos">Platos</option>
+                <option value="bebidas">Bebidas</option>
+            </select>
+        </div>
+
+        <div id="listaPlatos" style="display: none;">
+            <h3>Platos</h3>
+            <div class="menu-item">
+                <div>
+                    <h3>Huevo frito</h3>
+                    <p>Delicioso huevo frito a la perfección</p>
+                </div>
+                <div>
+                    <span>$20</span>
+                    <button class="boton-comprar" onclick="agregarAlCarrito('Huevo frito', 20)">Comprar</button>
+                </div>
+            </div>
+            <div class="menu-item">
+                <div>
+                    <h3>Pan con Mermelada de Frutilla</h3>
+                    <p>Pan tostado con deliciosa mermelada de frutilla</p>
+                </div>
+                <div>
+                    <span>$10</span>
+                    <button class="boton-comprar" onclick="agregarAlCarrito('Pan con Mermelada de Frutilla', 10)">Comprar</button>
+                </div>
+            </div>
+            <div class="menu-item">
+                <div>
+                    <h3>Hamburguesa Sorpresa</h3>
+                    <p>Una hamburguesa con ingredientes sorpresa</p>
+                </div>
+                <div>
+                    <span>$30</span>
+                    <button class="boton-comprar" onclick="agregarAlCarrito('Hamburguesa Sorpresa', 30)">Comprar</button>
+                </div>
+            </div>
+            <div class="menu-item">
+                <div>
+                    <h3>Huevo Frito con Ensalada</h3>
+                    <p>Huevo frito acompañado de ensalada fresca</p>
+                </div>
+                <div>
+                    <span>$25</span>
+                    <button class="boton-comprar" onclick="agregarAlCarrito('Huevo Frito con Ensalada', 25)">Comprar</button>
+                </div>
+            </div>
+            <div class="menu-item">
+                <div>
+                    <h3>Patito con Huevo frito</h3>
+                    <p>Tierno patito acompañado de huevo frito</p>
+                </div>
+                <div>
+                    <span>$35</span>
+                    <button class="boton-comprar" onclick="agregarAlCarrito('Patito con Huevo frito', 35)">Comprar</button>
+                </div>
+            </div>
+            <div class="menu-item">
+                <div>
+                    <h3>Ensalada</h3>
+                    <p>Fresca ensalada de la casa</p>
+                </div>
+                <div>
+                    <span>$20</span>
+                    <button class="boton-comprar" onclick="agregarAlCarrito('Ensalada', 20)">Comprar</button>
+                </div>
+            </div>
+            <div class="menu-item">
+                <div>
+                    <h3>Tostadas con Huevo Frito</h3>
+                    <p>Tostadas crujientes con huevo frito</p>
+                </div>
+                <div>
+                    <span>$25</span>
+                    <button class="boton-comprar" onclick="agregarAlCarrito('Tostadas con Huevo Frito', 25)">Comprar</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="listaBebidas" style="display: none;">
+            <h3>Bebidas</h3>
+            <div class="menu-item">
+                <div>
+                    <h3>Coca Cola</h3>
+                    <p>Refrescante gaseosa</p>
+                </div>
+                <div>
+                    <span>$10</span>
+                    <button class="boton-comprar" onclick="agregarAlCarrito('Coca Cola', 10)">Comprar</button>
+                </div>
+            </div>
+            <div class="menu-item">
+                <div>
+                    <h3>Sorpresa de Starburst</h3>
+                    <p>Bebida sorpresa con sabor a Starburst</p>
+                </div>
+                <div>
+                    <span>$15</span>
+                    <button class="boton-comprar" onclick="agregarAlCarrito('Sorpresa de Starburst', 15)">Comprar</button>
+                </div>
+            </div>
+            <div class="menu-item">
+                <div>
+                    <h3>Agua</h3>
+                    <p>Agua mineral natural</p>
+                </div>
+                <div>
+                    <span>$5</span>
+                    <button class="boton-comprar" onclick="agregarAlCarrito('Agua', 5)">Comprar</button>
+                </div>
+            </div>
+            <div class="menu-item">
+                <div>
+                    <h3>Jugo de Naranja</h3>
+                    <p>Jugo natural de naranja recién exprimido</p>
+                </div>
+                <div>
+                    <span>$10</span>
+                    <button class="boton-comprar" onclick="agregarAlCarrito('Jugo de Naranja', 10)">Comprar</button>
+                </div>
+            </div>
+            <div class="menu-item">
+                <div>
+                    <h3>Pepsi</h3>
+                    <p>Refrescante gaseosa Pepsi</p>
+                </div>
+                <div>
+                    <span>$10</span>
+                    <button class="boton-comprar" onclick="agregarAlCarrito('Pepsi', 10)">Comprar</button>
+                </div>
+            </div>
+            <div class="menu-item">
+                <div>
+                    <h3>7up</h3>
+                    <p>Refrescante gaseosa de lima-limón</p>
+                </div>
+                <div>
+                    <span>$10</span>
+                    <button class="boton-comprar" onclick="agregarAlCarrito('7up', 10)">Comprar</button>
+                </div>
+            </div>
+            <div class="menu-item">
+                <div>
+                    <h3>Pomelo</h3>
+                    <p>Refrescante gaseosa de pomelo</p>
+                </div>
+                <div>
+                    <span>$15</span>
+                    <button class="boton-comprar" onclick="agregarAlCarrito('Pomelo', 15)">Comprar</button>
+                </div>
+            </div>
+            <div class="menu-item">
+                <div>
+                    <h3>Jugo Natural de Sandía</h3>
+                    <p>Jugo natural de sandía recién preparado</p>
+                </div>
+                <div>
+                    <span>$15</span>
+                    <button class="boton-comprar" onclick="agregarAlCarrito('Jugo Natural de Sandía', 15)">Comprar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="PedirDomicilio" class="tabcontent">
+        <h2>Pedir a domicilio</h2>
+        <form id="formularioDomicilio">
+            <label for="nombreDomicilio">Nombre:</label>
+            <input type="text" id="nombreDomicilio" name="nombreDomicilio" required>
+
+            <label for="direccion">Dirección:</label>
+            <input type="text" id="direccion" nameype="text" id="direccion" name="direccion" required>
+
+            <label for="telefono">Teléfono:</label>
+            <input type="tel" id="telefono" name="telefono" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="platoDomicilio">Plato que desea:</label>
+            <input type="text" id="platoDomicilio" name="platoDomicilio" required>
+
+            <label for="bebidaDomicilio">Bebida que desea:</label>
+            <input type="text" id="bebidaDomicilio" name="bebidaDomicilio" required>
+
+            <label for="sugerenciaDomicilio">Alguna sugerencia?</label>
+            <textarea id="sugerenciaDomicilio" name="sugerenciaDomicilio" rows="4"></textarea>
+
+            <input type="submit" value="Enviar pedido a domicilio">
+        </form>
+    </div>
+
+    <div id="PedirMesa" class="tabcontent">
+        <h2>Reservar mesa</h2>
+        <form id="formularioMesa">
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre" required>
+
+            <label for="plato">Plato que desea:</label>
+            <input type="text" id="plato" name="plato" required>
+
+            <label for="bebida">Bebida que desea:</label>
+            <input type="text" id="bebida" name="bebida" required>
+
+            <label for="personas">Cantidad de personas:</label>
+            <input type="number" id="personas" name="personas" min="1" required>
+
+            <label for="sugerencia">Alguna sugerencia?</label>
+            <textarea id="sugerencia" name="sugerencia" rows="4"></textarea>
+
+            <input type="submit" value="Enviar pedido">
+        </form>
+    </div>
+
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        function toggleCarrito() {
+            var carritoContenido = document.getElementById("carrito-contenido");
+            carritoContenido.style.display = carritoContenido.style.display === "none" ? "block" : "none";
+        }
+
+        function agregarAlCarrito(producto, precio) {
+            if (!window.carrito) {
+                window.carrito = [];
+            }
+            
+            const tipo = ['Coca Cola', 'Sorpresa de Starburst', 'Agua', 'Jugo de Naranja', 'Pepsi', '7up', 'Pomelo', 'Jugo Natural de Sandía'].includes(producto) ? 'bebida' : 'plato';
+            
+            window.carrito.push({ tipo: tipo, nombre: producto, precio: precio });
+            
+            actualizarCarrito();
+            
+            alert(`${producto} agregado al carrito. Precio: $${precio}`);
+        }
+
+        function actualizarCarrito() {
+            const listaCarrito = document.getElementById('lista-carrito');
+            const totalCarrito = document.getElementById('total-carrito');
+            
+            listaCarrito.innerHTML = '';
+            let total = 0;
+            
+            window.carrito.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.textContent = `${item.nombre} - $${item.precio}`;
+                listaCarrito.appendChild(li);
+                total += item.precio;
+            });
+            
+            totalCarrito.textContent = total;
+        }
+
+        function hacerPedido() {
+            let platos = [];
+            let bebidas = [];
+
+            window.carrito.forEach(item => {
+                if (item.tipo === 'plato') {
+                    platos.push(item.nombre);
+                } else if (item.tipo === 'bebida') {
+                    bebidas.push(item.nombre);
+                }
+            });
+
+            document.getElementById('plato').value = platos.join(', ');
+            document.getElementById('bebida').value = bebidas.join(', ');
+
+            openTab(event, 'PedirMesa');
+
+            toggleCarrito();
+
+            window.carrito = [];
+            actualizarCarrito();
+        }
+
+        function mostrarCategoria() {
+            var categoria = document.getElementById("categoria").value;
+            document.getElementById("listaPlatos").style.display = "none";
+            document.getElementById("listaBebidas").style.display = "none";
+            if (categoria === "platos") {
+                document.getElementById("listaPlatos").style.display = "block";
+            } else if (categoria === "bebidas") {
+                document.getElementById("listaBebidas").style.display = "block";
+            }
+        }
+
+        // Inicializar el carrito y abrir la pestaña de Inicio por defecto
+        document.addEventListener('DOMContentLoaded', function() {
+            window.carrito = [];
+            actualizarCarrito();
+            openTab({ currentTarget: document.querySelector('.tablinks') }, 'Inicio');
+        });
+    </script>
+</body>
+</html>
