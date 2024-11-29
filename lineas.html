@@ -58,8 +58,8 @@
         .square:hover {
             background-color: #4682b4;
         }
-        /* Estilo de barra de estado y referencias */
-        .status-bar, #references {
+        /* Estilo de barra de estado */
+        .status-bar {
             margin-top: 10px;
             padding: 10px;
             text-align: center;
@@ -67,9 +67,6 @@
             background-color: #333333;
             border-radius: 10px;
             width: 80%;
-        }
-        #references p {
-            margin: 5px 0;
         }
         /* Pantallas de inicio y fin de juego */
         #start-screen, #game-screen, #game-over-screen {
@@ -83,6 +80,11 @@
             color: #ff4c4c;
             font-size: 2em;
             margin-top: 20px;
+        }
+        .countdown {
+            margin-top: 10px;
+            font-size: 1.2em;
+            color: #ffffff;
         }
     </style>
 </head>
@@ -120,19 +122,13 @@
         <button id="end-button" class="button" style="background-color: #ff4c4c; color: white;" onclick="endGame()">Abandonar Partida</button>
         <div id="lives" class="status-bar">Vidas: <span id="lives-count">50</span> ❤️</div>
         <div id="game-grid" class="game-grid"></div>
-        <div class="status-bar" id="hints">Pistas: <span id="hints-content">-</span></div>
-        <div id="references" class="status-bar">
-            <h3>Referencias</h3>
-            <p>Amarillo: Adivinaste la columna pero no la fila.</p>
-            <p>Azul fuerte: Adivinaste la fila pero no la columna.</p>
-            <p>Negro: No adivinaste ni la fila ni la columna.</p>
-        </div>
     </div>
 
     <!-- Game Over Screen -->
     <div id="game-over-screen" class="container">
         <div class="game-over">¡Perdiste! ☠️</div>
         <button class="button" onclick="goToStart()">Volver a Inicio</button>
+        <button class="button" onclick="goToSelection()">Nueva partida rápida</button>
     </div>
 
     <script>
@@ -197,13 +193,12 @@
                 document.getElementById('lives-count').textContent = lives;
                 const square = document.querySelectorAll('.square')[index];
 
-                // Pistas basadas en la posición
                 if (clickedCol === selectedCol) {
-                    square.style.backgroundColor = 'yellow'; // Misma columna
+                    square.style.backgroundColor = 'yellow';
                 } else if (clickedRow === selectedRow) {
-                    square.style.backgroundColor = 'darkblue'; // Misma fila
+                    square.style.backgroundColor = 'darkblue';
                 } else {
-                    square.style.backgroundColor = 'black'; // No coincide ni fila ni columna
+                    square.style.backgroundColor = 'black';
                 }
 
                 if (lives <= 0) endGame(false);
@@ -212,21 +207,24 @@
 
         function handleWin() {
             revealAllSquares(true);
-            const endButton = document.getElementById('end-button');
-            endButton.textContent = 'Volver al inicio';
-            endButton.style.backgroundColor = '#4caf50';
-            endButton.onclick = goToStart;
+            setTimeout(() => {
+                hideAllScreens();
+                document.getElementById('game-over-screen').style.display = 'flex';
+                document.querySelector('.game-over').textContent = '¡Ganaste! 🎉';
+            }, 5000); // Cambiado a 5 segundos para la pantalla de ganaste
+            // Nueva funcionalidad: contador regresivo
+            startCountdown(5); // Inicia la cuenta regresiva de 5 segundos
         }
 
         function endGame(won = false) {
             revealAllSquares(won);
-            const endButton = document.getElementById('end-button');
-            if (!won) {
-                const squares = document.querySelectorAll('.square');
-                squares[selectedSquare].style.backgroundColor = 'red'; // Cuadradito especial en rojo si perdiste
-            }
-            hideAllScreens();
-            document.getElementById('game-over-screen').style.display = 'flex';
+            setTimeout(() => {
+                hideAllScreens();
+                document.getElementById('game-over-screen').style.display = 'flex';
+                document.querySelector('.game-over').textContent = won ? '¡Ganaste! 🎉' : '¡Perdiste! ☠️';
+                // Nueva funcionalidad: contador regresivo
+                startCountdown(5); // Inicia la cuenta regresiva de 5 segundos
+            }, 3000); // Cambiado a 3 segundos
         }
 
         function revealAllSquares(won) {
@@ -238,7 +236,9 @@
                 const row = Math.floor(index / gridSize);
                 const col = index % gridSize;
 
-                if (col === selectedCol) {
+                if (index === selectedSquare) {
+                    square.style.backgroundColor = won ? 'green' : 'red';
+                } else if (col === selectedCol) {
                     square.style.backgroundColor = 'yellow';
                 } else if (row === selectedRow) {
                     square.style.backgroundColor = 'darkblue';
@@ -246,13 +246,23 @@
                     square.style.backgroundColor = 'black';
                 }
             });
+        }
 
-            // Marcar donde estaba el cuadradito especial
-            if (won) {
-                squares[selectedSquare].style.backgroundColor = 'green'; // Verde si ganó
-            } else {
-                squares[selectedSquare].style.backgroundColor = 'red'; // Rojo si no ganó
-            }
+        function startCountdown(seconds) {
+            const countdownElement = document.createElement('div');
+            countdownElement.className = 'countdown';
+            countdownElement.textContent = `Cargando en ${seconds} segundos...`;
+            document.getElementById('game-screen').appendChild(countdownElement);
+
+            const interval = setInterval(() => {
+                seconds--;
+                countdownElement.textContent = `Cargando en ${seconds} segundos...`;
+                if (seconds <= 0) {
+                    clearInterval(interval);
+                    countdownElement.remove();
+                    // Aquí puedes agregar la lógica para mostrar la pantalla de "Ganaste"
+                }
+            }, 1000);
         }
 
         function goToStart() {
@@ -260,7 +270,6 @@
             document.getElementById('start-screen').style.display = 'flex';
         }
 
-        // Mostrar la pantalla de inicio al cargar la página
         window.onload = () => {
             document.getElementById('start-screen').style.display = 'flex';
         };
