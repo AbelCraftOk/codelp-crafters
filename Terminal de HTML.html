@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Terminal HTML</title>
+    <style>
+        /* Estilos generales proporcionados */
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #2b2b2b;
+            color: #ffffff;
+            margin: 0;
+            min-height: 100vh;
+            /* Asegura que el body ocupe toda la altura */
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px;
+            flex-grow: 1;
+            /* Permite que el contenedor crezca */
+        }
+
+        .button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #45a049;
+        }
+
+        /* Estilos específicos para las pestañas */
+        .tab {
+            display: none;
+            width: 100%;
+            text-align: center;
+            height: 100%;
+            /* Ocupa toda la altura disponible */
+        }
+
+        .tab.active {
+            display: block;
+        }
+
+        /* Estilos para la terminal */
+        .terminal-container {
+            display: flex;
+            width: 100%;
+            gap: 20px;
+            height: calc(90vh - 40px);
+            /* Altura ajustada para ocupar casi toda la pantalla */
+        }
+
+        .terminal-left,
+        .terminal-right {
+            flex: 1;
+            background-color: #333333;
+            padding: 20px;
+            border-radius: 10px;
+            height: 100%;
+            /* Ocupa toda la altura del contenedor */
+            display: flex;
+            flex-direction: column;
+        }
+
+        #preview-area {
+            width: 100%;
+            flex-grow: 1;
+            /* Permite que el iframe crezca */
+            background-color: white;
+            border: none;
+            border-radius: 5px;
+            min-height: 600px;
+            /* Altura mínima aumentada */
+        }
+
+        #code-input {
+            width: 100%;
+            flex-grow: 1;
+            /* Permite que el textarea crezca */
+            background-color: #1e1e1e;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            font-family: monospace;
+            resize: vertical;
+            min-height: 600px;
+            /* Altura mínima aumentada */
+            margin-bottom: 10px;
+        }
+
+        .title {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .info-text {
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+
+        .button-container {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Pestaña Home -->
+    <div id="home" class="tab active container">
+        <h1 class="title">Bienvenido a la</h1>
+        <h1 class="title">Terminal de HTML</h1>
+        <button class="button" onclick="showTab('info')">Ir a la Terminal</button>
+    </div>
+
+    <!-- Pestaña Info -->
+    <div id="info" class="tab container">
+        <p class="info-text">Recuerda que el código que desees importar tiene que estar bien hecho...</p>
+        <p class="info-text">Si no es así, la terminal no podrá funcionar correctamente.</p>
+        <button class="button" onclick="showTab('terminal')">Entendido</button>
+    </div>
+
+    <!-- Pestaña Terminal -->
+    <div id="terminal" class="tab container">
+        <div class="terminal-container">
+            <!-- Lado izquierdo - Preview -->
+            <div class="terminal-left">
+                <iframe id="preview-area"></iframe>
+            </div>
+
+            <!-- Lado derecho - Input -->
+            <div class="terminal-right">
+                <textarea id="code-input" placeholder="Pega o escribe tu código HTML aquí..."></textarea>
+                <div class="button-container">
+                    <button class="button" onclick="loadFile()">Cargar archivo HTML</button>
+                    <button class="button" onclick="updatePreview()">Ejecutar código</button>
+                    <input type="file" id="file-input" accept=".html" style="display: none;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabId) {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        function updatePreview() {
+            const code = document.getElementById('code-input').value;
+            const preview = document.getElementById('preview-area');
+            preview.srcdoc = code;
+        }
+
+        function loadFile() {
+            document.getElementById('file-input').click();
+        }
+
+        document.getElementById('file-input').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('code-input').value = e.target.result;
+                    updatePreview();
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        document.getElementById('code-input').addEventListener('input', updatePreview);
+    </script>
+</body>
+
+</html>
