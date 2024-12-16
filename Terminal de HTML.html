@@ -15,7 +15,6 @@
             color: #ffffff;
             margin: 0;
             min-height: 100vh;
-            /* Asegura que el body ocupe toda la altura */
         }
 
         .container {
@@ -23,7 +22,6 @@
             max-width: 1200px;
             padding: 20px;
             flex-grow: 1;
-            /* Permite que el contenedor crezca */
         }
 
         .button {
@@ -42,26 +40,22 @@
             background-color: #45a049;
         }
 
-        /* Estilos específicos para las pestañas */
         .tab {
             display: none;
             width: 100%;
             text-align: center;
             height: 100%;
-            /* Ocupa toda la altura disponible */
         }
 
         .tab.active {
             display: block;
         }
 
-        /* Estilos para la terminal */
         .terminal-container {
             display: flex;
             width: 100%;
             gap: 20px;
             height: calc(90vh - 40px);
-            /* Altura ajustada para ocupar casi toda la pantalla */
         }
 
         .terminal-left,
@@ -71,7 +65,6 @@
             padding: 20px;
             border-radius: 10px;
             height: 100%;
-            /* Ocupa toda la altura del contenedor */
             display: flex;
             flex-direction: column;
         }
@@ -79,19 +72,16 @@
         #preview-area {
             width: 95%;
             flex-grow: 1;
-            /* Permite que el iframe crezca */
             background-color: white;
             border: none;
             border-radius: 5px;
             min-height: 500px;
-            /* Altura mínima aumentada */
             margin-bottom: 20px;
         }
 
         #code-input {
             width: 100%;
             flex-grow: 1;
-            /* Permite que el textarea crezca */
             background-color: #1e1e1e;
             color: white;
             border: none;
@@ -100,7 +90,6 @@
             font-family: monospace;
             resize: vertical;
             min-height: 600px;
-            /* Altura mínima aumentada */
             margin-bottom: 10px;
         }
 
@@ -118,7 +107,6 @@
             margin-top: 10px;
         }
 
-        /* Nuevos estilos para el botón de pantalla completa */
         .toggle-fullscreen {
             width: 30px;
             height: 30px;
@@ -141,6 +129,38 @@
             width: 100%;
             height: 97%;
             z-index: 1000;
+        }
+
+        /* Estilos para el modal de descarga */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+        }
+
+        .modal-content {
+            background-color: #333333;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        #download-name {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: none;
+            background-color: #1e1e1e;
+            color: white;
         }
     </style>
 </head>
@@ -167,8 +187,10 @@
             <div class="terminal-left">
                 <iframe id="preview-area"></iframe>
                 <button class="toggle-fullscreen" onclick="toggleFullscreen(this)">
-                    <img src="https://abelcraftok.github.io/codelp-crafters/agrandar-pantalla.png" alt="Toggle fullscreen">
+                    <img src="https://abelcraftok.github.io/codelp-crafters/agrandar-pantalla.png"
+                        alt="Toggle fullscreen">
                 </button>
+                <button class="button" onclick="showDownloadModal()">Descargar HTML</button>
             </div>
 
             <!-- Lado derecho - Input -->
@@ -180,6 +202,15 @@
                     <input type="file" id="file-input" accept=".html" style="display: none;">
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Modal de descarga -->
+    <div id="download-modal" class="modal">
+        <div class="modal-content">
+            <h2>¿Cómo se llamará este archivo?</h2>
+            <input type="text" id="download-name" placeholder="Nombre del archivo">
+            <button class="button" onclick="download()">DESCARGAR</button>
         </div>
     </div>
 
@@ -204,15 +235,44 @@
         function toggleFullscreen(button) {
             const terminalLeft = button.parentElement;
             const img = button.querySelector('img');
-            
+
             if (terminalLeft.classList.contains('fullscreen')) {
-                // Cambiar a modo normal
                 terminalLeft.classList.remove('fullscreen');
                 img.src = "https://abelcraftok.github.io/codelp-crafters/agrandar-pantalla.png";
             } else {
-                // Cambiar a modo pantalla completa
                 terminalLeft.classList.add('fullscreen');
                 img.src = "https://abelcraftok.github.io/codelp-crafters/achicar-pantalla.png";
+            }
+        }
+
+        function showDownloadModal() {
+            document.getElementById('download-modal').style.display = 'block';
+        }
+
+        function download() {
+            try {
+                const fileName = document.getElementById('download-name').value || 'documento';
+                const content = document.getElementById('code-input').value;
+                
+                // Crear Blob directamente
+                const blob = new Blob([content], { type: 'text/html;charset=utf-8' });
+                
+                // Usar URL.createObjectURL para mejor rendimiento
+                const url = window.URL.createObjectURL(blob);
+                
+                const element = document.createElement('a');
+                element.href = url;
+                element.download = fileName + '.html';
+                
+                // Ejecutar la descarga inmediatamente
+                element.click();
+                
+                // Limpiar
+                window.URL.revokeObjectURL(url);
+                document.getElementById('download-modal').style.display = 'none';
+            } catch (error) {
+                console.error('Error en la descarga:', error);
+                alert('Hubo un error al intentar descargar el archivo');
             }
         }
 
@@ -229,6 +289,13 @@
         });
 
         document.getElementById('code-input').addEventListener('input', updatePreview);
+
+        window.onclick = function (event) {
+            const modal = document.getElementById('download-modal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
     </script>
 </body>
 
