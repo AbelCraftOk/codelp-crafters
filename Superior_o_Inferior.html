@@ -21,11 +21,11 @@
         .container {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
-            border-radius: 20px;
+            border-radius: 35px;
             padding: 40px;
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            max-width: 500px;
-            width: 90%;
+            max-width: 560px;
+            width: 1000%;
             display: none;
         }
 
@@ -62,17 +62,20 @@
 
         .double-btn {
             background: none;
-           border: none;
-           cursor: pointer;
-           padding: 5px; /* Reducir el tamaño del botón */
-           display: flex;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+            /* Reducir el tamaño del botón */
+            display: flex;
             align-items: center;
-           justify-content: center;
+            justify-content: center;
         }
 
         .double-btn img {
-            width: 24px; /* Ajustar el ancho de la imagen */
-            height: 24px; /* Ajustar el alto de la imagen */
+            width: 24px;
+            /* Ajustar el ancho de la imagen */
+            height: 24px;
+            /* Ajustar el alto de la imagen */
             object-fit: contain;
         }
 
@@ -116,6 +119,25 @@
             border-radius: 5px;
         }
 
+        .home-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 8px 15px;
+            font-size: 14px;
+            color: white;
+            background-color: #FF4C4C;
+            border: none;
+            border-radius: 10000px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .home-btn:hover {
+            background-color: #FF3333;
+            transform: translateY(-2px);
+        }
+
         .double-btn {
             background: none;
             border: none;
@@ -127,6 +149,7 @@
 <body>
 
     <div id="inicio" class="container active">
+        <button class="home-btn" onclick="goToHome()">Ir al Inicio</button>
         <h2>Superior o Inferior</h2>
         <div class="number-display" id="current_number">5</div>
         <button class="btn" onclick="guess('superior')">SUPERIOR</button>
@@ -139,6 +162,7 @@
             <button class="double-btn" id="toggle_bet" onclick="toggleEdit('bet_amount', 'toggle_bet')">
                 <img src="https://abelcraftok.github.io/codelp-crafters/edit.png" id="bet_icon" alt="edit">
             </button>
+            <button class="btn" onclick="betAll()">Apostar todo</button>
         </div>
         <button class="btn reset-btn" onclick="resetGame()">Reiniciar</button>
         <button class="btn" onclick="changeTab('cuenta')">Cuenta</button>
@@ -168,48 +192,48 @@
             document.getElementById(tabId).classList.add('active');
         }
 
-    function guess(choice) {
-        if (balance <= 0) {
-            alert("Dinero insuficiente. Ve y recarga más.");
-            return;
+        function guess(choice) {
+            if (balance <= 0) {
+                alert("Dinero insuficiente. Ve y recarga más.");
+                return;
+            }
+
+            let newNumber;
+            do {
+                newNumber = Math.floor(Math.random() * 10) + 1;
+            } while (newNumber === currentNumber);
+
+            let betAmount = parseInt(document.getElementById("bet_amount").value) || 0;
+            if (betAmount > balance || betAmount <= 0) {
+                alert("Apuesta inválida.");
+                return;
+            }
+
+            let numberDisplay = document.getElementById("current_number");
+            numberDisplay.style.transform = "scale(1.1)";
+            numberDisplay.innerText = newNumber;
+
+            setTimeout(() => {
+                numberDisplay.style.transform = "scale(1)";
+            }, 200);
+
+            if ((choice === 'superior' && newNumber <= currentNumber) || (choice === 'inferior' && newNumber >= currentNumber)) {
+                // El jugador pierde
+                const loss = betAmount * 2;
+                balance -= loss;
+                document.getElementById("result_message").innerText = `¡Perdiste $${loss}!`;
+                document.getElementById("result_message").style.color = "#FF6B6B";
+            } else {
+                // El jugador gana
+                const win = betAmount * 3;
+                balance += win;
+                document.getElementById("result_message").innerText = `¡Ganaste $${win}!`;
+                document.getElementById("result_message").style.color = "#4CAF50";
+            }
+
+            document.getElementById("player_balance").innerText = "Saldo actual: $" + balance;
+            currentNumber = newNumber;
         }
-
-        let newNumber;
-        do {
-            newNumber = Math.floor(Math.random() * 10) + 1;
-        } while (newNumber === currentNumber);
-
-        let betAmount = parseInt(document.getElementById("bet_amount").value) || 0;
-        if (betAmount > balance || betAmount <= 0) {
-            alert("Apuesta inválida.");
-            return;
-        }
-
-        let numberDisplay = document.getElementById("current_number");
-        numberDisplay.style.transform = "scale(1.1)";
-        numberDisplay.innerText = newNumber;
-
-        setTimeout(() => {
-            numberDisplay.style.transform = "scale(1)";
-        }, 200);
-
-        if ((choice === 'superior' && newNumber <= currentNumber) || (choice === 'inferior' && newNumber >= currentNumber)) {
-            // El jugador pierde
-            const loss = betAmount * 2;
-            balance -= loss;
-            document.getElementById("result_message").innerText = `¡Perdiste $${loss}!`;
-            document.getElementById("result_message").style.color = "#FF6B6B";
-        } else {
-            // El jugador gana
-            const win = betAmount * 3;
-            balance += win;
-            document.getElementById("result_message").innerText = `¡Ganaste $${win}!`;
-            document.getElementById("result_message").style.color = "#4CAF50";
-        }
-
-        document.getElementById("player_balance").innerText = "Saldo actual: $" + balance;
-        currentNumber = newNumber;
-    }
 
         function resetGame() {
             currentNumber = 5;
@@ -217,6 +241,10 @@
             document.getElementById("result_message").innerText = "";
             balance = 0;
             document.getElementById("player_balance").innerText = "Saldo actual: $" + balance;
+        }
+
+        function betAll() {
+            document.getElementById("bet_amount").value = balance;
         }
 
         function toggleEdit(inputId, buttonId) {
@@ -231,6 +259,10 @@
                 input.disabled = true;
                 icon.src = "https://abelcraftok.github.io/codelp-crafters/edit.png";
             }
+        }
+
+        function goToHome() {
+            window.location.href = 'index.html';
         }
 
         function loadMoney() {
