@@ -1,166 +1,6 @@
 Crea un codigo HTML de una Terminal de Codigos HTML que permita ver el resulta del codigo en formatos de diferentes dispositivos.
 
-Usa el siguiente <style>:
-
-    <style>
-        /* Estilos generales proporcionados */
-        body {
-            font-family: 'Arial', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-color: #2b2b2b;
-            color: #ffffff;
-            margin: 0;
-            min-height: 100vh;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            padding: 20px;
-            flex-grow: 1;
-        }
-
-        .button {
-            padding: 10px 20px;
-            margin: 5px;
-            font-size: 1em;
-            cursor: pointer;
-            background-color: #4caf50;
-            color: white;
-            border: none;
-            border-radius: 12px;
-            transition: background-color 0.3s;
-        }
-
-        .button:hover {
-            background-color: #45a049;
-        }
-
-        .tab {
-            display: none;
-            width: 100%;
-            text-align: center;
-            height: 100%;
-        }
-
-        .tab.active {
-            display: block;
-        }
-
-        .terminal-container {
-            display: flex;
-            width: 100%;
-            gap: 20px;
-            height: calc(90vh - 40px);
-        }
-
-        .terminal-left,
-        .terminal-right {
-            flex: 1;
-            background-color: #333333;
-            padding: 20px;
-            border-radius: 10px;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-
-        #preview-area {
-            width: 95%;
-            flex-grow: 1;
-            background-color: white;
-            border: none;
-            border-radius: 5px;
-            min-height: 500px;
-            margin-bottom: 20px;
-        }
-
-        #code-input {
-            width: 100%;
-            flex-grow: 1;
-            background-color: #1e1e1e;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 10px;
-            font-family: monospace;
-            resize: vertical;
-            min-height: 600px;
-            margin-bottom: 10px;
-        }
-
-        .title {
-            font-size: 2.5em;
-            margin-bottom: 20px;
-        }
-
-        .info-text {
-            font-size: 1.2em;
-            margin: 10px 0;
-        }
-
-        .button-container {
-            margin-top: 10px;
-        }
-
-        .toggle-fullscreen {
-            width: 30px;
-            height: 30px;
-            padding: 5px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        .toggle-fullscreen img {
-            width: 100%;
-            height: 100%;
-        }
-
-        .terminal-left.fullscreen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 97%;
-            z-index: 1000;
-        }
-
-        /* Estilos para el modal de descarga */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            z-index: 2000;
-        }
-
-        .modal-content {
-            background-color: #333333;
-            margin: 15% auto;
-            padding: 20px;
-            border-radius: 10px;
-            width: 80%;
-            max-width: 500px;
-            text-align: center;
-        }
-
-        #download-name {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            border: none;
-            background-color: #1e1e1e;
-            color: white;
-        }
-    </style>
+Cada boton, recuadro, etc. Tiene su posicion especifica/estrategica asi que no la modifiques.
 
 Crea diferentes pestañas:
 "inicio"
@@ -226,6 +66,8 @@ Las opciones seran: {
     "Windows 8"
     "Windows 10"
     "Windows 11"
+    "------------" (esta opcion no va a poder ser seleccionada, porque es un separador)
+    "Perzonalizable"
 }
 
 Si se selecciona la opcion: "SAMSUMNG S24", la pantalla se configurara asi.
@@ -249,6 +91,10 @@ El HTML puesto se visualizara en un estilo como el del sistema operativo: Window
 Si se selecciona la opcion: "Windows 11", la pantalla se configurara asi.
 El HTML puesto se visualizara en un estilo como el del sistema operativo: Windows 11
 
+Si se selecciona la opcion: "Perzonalizable", la pantalla se configurara asi.
+Al usuario se le abrira un recuadro donde se le preguntara cuantos px quiere de alto y cuantos quiere de ancho.
+Luego el HTML puesto se visualizara con el tamaño que el usuario puso.
+
 ===================================
 Configurar mas profundamente el recuadro: "2"
 
@@ -263,7 +109,7 @@ Boton 1: "Cargar un archivo HTML"{Funcion:
 ===================================
 Configurar mas profundamente el recuadro: "3"
 
-En la esquina superior derecha del recuadro estara el icono: "https://abelcraftok.github.io/codelp-crafters/close.svg" - Al usarse se eliminara temporalmente el recuadro 3.
+En la esquina superior derecha del recuadro estara el icono: "https://abelcraftok.github.io/codelp-crafters/close.svg" Tamaño del icono: 5px x 5px - Al usarse se eliminara temporalmente el recuadro 3.
 
 Contenido del recuadro:
 Texto: "1. Introduce el codigo o importa un archivo con la extencion .html para poder usar la terminal."
