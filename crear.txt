@@ -188,21 +188,16 @@ Crea 3 recuadros:{
 Recuadro 1: Estara en la parte izquierda y funcionara para dar el resultado del codigo HTML importado en el segundo recuadro.
 Recuadro 2: Estara en la parte derecha y funcionara para importar el codigo HTML asi en el recuadro 1 se puede ver el resultado.
 Recuadro 3: Este estara en la parte inferior (Abajo de los anteriores 2 recuadros), ese recuadro servira para ser un tutorial para el usuario de como usar la terminal correctamente.
+Que entre estos 3 recuadros deben haber 5px de distancia entre sus bordes.
 }
 
 ===================================
 Configurar mas profundamente el recuadro: "1"
 
-En la esquina inferior derecha abra un boton de 2 caras.
-Cuando el boton este en la cara: "https://abelcraftok.github.io/codelp-crafters/agrandar-pantalla.png" estara en: "false"
-Cuando el boton este en la cara: "https://abelcraftok.github.io/codelp-crafters/achicar-pantalla.png" estara en: "true"
+Cada vez que se modifique algo en el recuadro 2, se volvera a generar la vista previa (asi se puede ver el resultado en tiempo real)
 
-Si esta en: "false" - La pantalla se vera normal.
-Si esta en: "true" - Se agrandara la pantalla para que solo se vea el recuadro
-
-------
-// En la esquina inferior izquierda abra un boton que servira para descargar el archivo que se esta visualizando.
-Boton: "Descargar codigo" {Funcion:
+// En la parte inferior abra 2 botones. El boton 1 estara en la parte inferior pero de la mitad para la izquierda y el boton 2 estara en la parte inferior pero de la mitad para la derecha.
+Boton 1: "Descargar codigo" {Funcion:
 1. Se creara un archivo temporal en la memoria.
 2. Se copiara el codigo que hay en el recuadro 2 y se pegara en el archivo recien creado.
 3. Se le abrira un nuevo recuadro al usario{
@@ -211,6 +206,13 @@ Boton: "Descargar codigo" {Funcion:
 4. El archivo recientemente creado, se le asignara el nombre: "%response-download%".
 5. Se mandara a descargar el archivo: "%response-download%"
 }
+
+Boton 2: Sera un boton de doble cara.
+Cuando el boton este en la cara: "https://abelcraftok.github.io/codelp-crafters/agrandar-pantalla.png" estara en: "false"
+Cuando el boton este en la cara: "https://abelcraftok.github.io/codelp-crafters/achicar-pantalla.png" estara en: "true"
+
+Si esta en: "false" - La pantalla se vera normal.
+Si esta en: "true" - Se agrandara la pantalla para que solo se vea el recuadro
 
 ------
 // En la esquina superior izquierda abra un selector de opciones.
@@ -251,7 +253,7 @@ El HTML puesto se visualizara en un estilo como el del sistema operativo: Window
 Configurar mas profundamente el recuadro: "2"
 
 // En la parte inferior abra un boton.
-Boton: "Cargar un archivo HTML"{Funcion: 
+Boton 1: "Cargar un archivo HTML"{Funcion: 
     1. Se abrira una pestaña del explorador de archivos (para seleccionar un solo archivo con la extencion: ".html").
     2. Se copiara el contenido del archivo seleccionado.
     3. El contenido copiado se pegara en la parte para introducir el codigo.
