@@ -1,0 +1,269 @@
+Crea un codigo HTML de una Terminal de Codigos HTML que permita ver el resulta del codigo en formatos de diferentes dispositivos.
+
+Usa el siguiente <style>:
+
+    <style>
+        /* Estilos generales proporcionados */
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #2b2b2b;
+            color: #ffffff;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px;
+            flex-grow: 1;
+        }
+
+        .button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #45a049;
+        }
+
+        .tab {
+            display: none;
+            width: 100%;
+            text-align: center;
+            height: 100%;
+        }
+
+        .tab.active {
+            display: block;
+        }
+
+        .terminal-container {
+            display: flex;
+            width: 100%;
+            gap: 20px;
+            height: calc(90vh - 40px);
+        }
+
+        .terminal-left,
+        .terminal-right {
+            flex: 1;
+            background-color: #333333;
+            padding: 20px;
+            border-radius: 10px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #preview-area {
+            width: 95%;
+            flex-grow: 1;
+            background-color: white;
+            border: none;
+            border-radius: 5px;
+            min-height: 500px;
+            margin-bottom: 20px;
+        }
+
+        #code-input {
+            width: 100%;
+            flex-grow: 1;
+            background-color: #1e1e1e;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            font-family: monospace;
+            resize: vertical;
+            min-height: 600px;
+            margin-bottom: 10px;
+        }
+
+        .title {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .info-text {
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+
+        .button-container {
+            margin-top: 10px;
+        }
+
+        .toggle-fullscreen {
+            width: 30px;
+            height: 30px;
+            padding: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .toggle-fullscreen img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .terminal-left.fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 97%;
+            z-index: 1000;
+        }
+
+        /* Estilos para el modal de descarga */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+        }
+
+        .modal-content {
+            background-color: #333333;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        #download-name {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: none;
+            background-color: #1e1e1e;
+            color: white;
+        }
+    </style>
+
+Crea diferentes pestañas:
+"inicio"
+"info"
+"terminal"
+
+=============
+Configuracion de la pestaña: "inicio"
+
+Titulo: "Bienvenido a la terminal HTML" - Titulo centrado
+Texto: "Aqui contamos con visualizaciones de: Computadoras, Tablets y Telefonos" - Texto centrado
+Boton: "Ir a la terminal"{Llevara a la pestaña: "info"} - Boton centrado
+
+=============
+Configuracion de la pestaña: "info"
+
+Texto: "Recuerda que el código que desees importar tiene que estar bien hecho..." - Texto centrado
+Texto: "Si no es así, la terminal no podrá funcionar correctamente." - Texto centrado
+Boton: "Entendido"{Llevara a la pestaña: "terminal"} - Boton centrado
+
+=============
+Configuracion de la pestaña: "terminal"
+
+Crea 3 recuadros:{
+Recuadro 1: Estara en la parte izquierda y funcionara para dar el resultado del codigo HTML importado en el segundo recuadro.
+Recuadro 2: Estara en la parte derecha y funcionara para importar el codigo HTML asi en el recuadro 1 se puede ver el resultado.
+Recuadro 3: Este estara en la parte inferior (Abajo de los anteriores 2 recuadros), ese recuadro servira para ser un tutorial para el usuario de como usar la terminal correctamente.
+}
+
+===================================
+Configurar mas profundamente el recuadro: "1"
+
+En la esquina inferior derecha abra un boton de 2 caras.
+Cuando el boton este en la cara: "https://abelcraftok.github.io/codelp-crafters/agrandar-pantalla.png" estara en: "false"
+Cuando el boton este en la cara: "https://abelcraftok.github.io/codelp-crafters/achicar-pantalla.png" estara en: "true"
+
+Si esta en: "false" - La pantalla se vera normal.
+Si esta en: "true" - Se agrandara la pantalla para que solo se vea el recuadro
+
+------
+// En la esquina inferior izquierda abra un boton que servira para descargar el archivo que se esta visualizando.
+Boton: "Descargar codigo" {Funcion:
+1. Se creara un archivo temporal en la memoria.
+2. Se copiara el codigo que hay en el recuadro 2 y se pegara en el archivo recien creado.
+3. Se le abrira un nuevo recuadro al usario{
+    Titulo: "¿Como se llamara el archivo?"
+    Recuadro donde el usuario pueda escribir - Lo que esccriba el usuario se guardara como: "%response-download%"}.
+4. El archivo recientemente creado, se le asignara el nombre: "%response-download%".
+5. Se mandara a descargar el archivo: "%response-download%"
+}
+
+------
+// En la esquina superior izquierda abra un selector de opciones.
+Las opciones seran: {
+    "SAMSUMNG S24"
+    "MOTOROLA E22"
+    "------------" (esta opcion no va a poder ser seleccionada, porque es un separador)
+    SAMSUMNG Tab A9
+    "------------" (esta opcion no va a poder ser seleccionada, porque es un separador)
+    "Windows 7"
+    "Windows 8"
+    "Windows 10"
+    "Windows 11"
+}
+
+Si se selecciona la opcion: "SAMSUMNG S24", la pantalla se configurara asi.
+El HTML puesto se visualizara en una pantalla de: 2340px x 1080px
+
+Si se selecciona la opcion: "MOTOROLA E22", la pantalla se configurara asi.
+El HTML puesto se visualizara en una pantalla de: 1600px x 720px
+
+Si se selecciona la opcion: "SAMSUMNG Tab A9", la pantalla se configurara asi.
+El HTML puesto se visualizara en una pantalla de: 1920px x 1200px
+
+Si se selecciona la opcion: "Windows 7", la pantalla se configurara asi.
+El HTML puesto se visualizara en un estilo como el del sistema operativo: Windows 7
+
+Si se selecciona la opcion: "Windows 8", la pantalla se configurara asi.
+El HTML puesto se visualizara en un estilo como el del sistema operativo: Windows 8
+
+Si se selecciona la opcion: "Windows 10", la pantalla se configurara asi.
+El HTML puesto se visualizara en un estilo como el del sistema operativo: Windows 10
+
+Si se selecciona la opcion: "Windows 11", la pantalla se configurara asi.
+El HTML puesto se visualizara en un estilo como el del sistema operativo: Windows 11
+
+===================================
+Configurar mas profundamente el recuadro: "2"
+
+// En la parte inferior abra un boton.
+Boton: "Cargar un archivo HTML"{Funcion: 
+    1. Se abrira una pestaña del explorador de archivos (para seleccionar un solo archivo con la extencion: ".html").
+    2. Se copiara el contenido del archivo seleccionado.
+    3. El contenido copiado se pegara en la parte para introducir el codigo.
+    4. Y listo, ya tendra el codigo listo para usar la terminal.
+}
+
+===================================
+Configurar mas profundamente el recuadro: "3"
+
+En la esquina superior derecha del recuadro estara el icono: "https://abelcraftok.github.io/codelp-crafters/close.svg" - Al usarse se eliminara temporalmente el recuadro 3.
+
+Contenido del recuadro:
+Texto: "1. Introduce el codigo o importa un archivo con la extencion .html para poder usar la terminal."
+Texto: "2. Selecciona con cual dispositivo quieres visualizar el resultado."
+Texto: "3. Ahora le das a agrandar la pantalla y listo... Podras ver el resultado en pantalla completa."
