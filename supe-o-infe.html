@@ -119,25 +119,6 @@
             border-radius: 5px;
         }
 
-        .home-btn {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            padding: 8px 15px;
-            font-size: 14px;
-            color: white;
-            background-color: #FF4C4C;
-            border: none;
-            border-radius: 10000px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .home-btn:hover {
-            background-color: #FF3333;
-            transform: translateY(-2px);
-        }
-
         .double-btn {
             background: none;
             border: none;
@@ -149,7 +130,6 @@
 <body>
 
     <div id="inicio" class="container active">
-        <button class="home-btn" onclick="goToHome()">Ir al Inicio</button>
         <h2>Superior o Inferior</h2>
         <div class="number-display" id="current_number">5</div>
         <button class="btn" onclick="guess('superior')">SUPERIOR</button>
@@ -259,10 +239,6 @@
                 input.disabled = true;
                 icon.src = "https://abelcraftok.github.io/codelp-crafters/edit.png";
             }
-        }
-
-        function goToHome() {
-            window.location.href = 'index.html';
         }
 
         function loadMoney() {
