@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplicación de Login</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0e6ff;
+        }
+        .login-container {
+            text-align: center;
+            padding: 30px;
+            border-radius: 15px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 350px;
+            width: 100%;
+        }
+        h2 {
+            color: #6a5acd;
+            margin-bottom: 20px;
+        }
+        input, button {
+            margin: 10px 0;
+            padding: 10px;
+            width: 100%;
+            border: 1px solid #d3d3d3;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        input:focus {
+            outline: none;
+            border-color: #6a5acd;
+        }
+        button {
+            background-color: #6a5acd;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #5a4aad;
+        }
+        #textoGenerado {
+            margin-top: 20px;
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+        .bits-display {
+            margin-top: 10px;
+            color: #6a5acd;
+            font-weight: bold;
+        }
+        .temp-account-panel {
+            margin-top: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Bienvenido</h2>
+        <input type="text" id="usuario" name="usuario" placeholder="Usuario/Correo Electrónico">
+        <input type="password" id="contraseña" name="contraseña" placeholder="Contraseña">
+        <button onclick="login()">Iniciar sesión</button>
+        <button onclick="mostrarPanelTemporal()">Cuenta Temporal</button>
+        <div id="textoGenerado"></div>
+        <div id="bitsDisplay" class="bits-display"></div>
+        
+        <!-- Panel para cuenta temporal -->
+        <div id="tempAccountPanel" class="temp-account-panel">
+            <input type="text" id="tempUsuario" placeholder="Nombre de usuario temporal">
+            <input type="number" id="tempBits" placeholder="Cantidad de Bits">
+            <button onclick="crearCuentaTemporal()">Crear cuenta temporal</button>
+        </div>
+    </div>
+
+    <script>
+        const usuarios = {
+            "Pedro Ojeda": { password: "pedroadmin", bits: 1000000 },
+            "LoDePedro": { password: "admin", bits: 1000000 }
+        };
+
+        function guardarDatosSesion(usuario, bits) {
+            sessionStorage.setItem('usuarioActual', usuario);
+            sessionStorage.setItem('bitsUsuario', bits);
+            const evento = new CustomEvent('sesionIniciada', {
+                detail: { usuario, bits }
+            });
+            window.dispatchEvent(evento);
+        }
+
+        function login() {
+            var usuario = document.getElementById("usuario").value;
+            var contraseña = document.getElementById("contraseña").value;
+            var textoGenerado = document.getElementById("textoGenerado");
+            var bitsDisplay = document.getElementById("bitsDisplay");
+
+            if (usuarios[usuario] && usuarios[usuario].password === contraseña) {
+                textoGenerado.innerHTML = "Inicio de sesión exitoso";
+                bitsDisplay.innerHTML = `Bits disponibles: ${usuarios[usuario].bits}`;
+                guardarDatosSesion(usuario, usuarios[usuario].bits);
+            } else {
+                textoGenerado.innerHTML = "Usuario o contraseña incorrectos";
+                bitsDisplay.innerHTML = "";
+            }
+        }
+
+        function mostrarPanelTemporal() {
+            var panel = document.getElementById("tempAccountPanel");
+            panel.style.display = panel.style.display === "none" ? "block" : "none";
+        }
+
+        function crearCuentaTemporal() {
+            var usuario = document.getElementById("tempUsuario").value;
+            var bits = document.getElementById("tempBits").value;
+            var textoGenerado = document.getElementById("textoGenerado");
+            var bitsDisplay = document.getElementById("bitsDisplay");
+
+            if (usuario && bits) {
+                textoGenerado.innerHTML = "Cuenta temporal creada exitosamente";
+                bitsDisplay.innerHTML = `Bits disponibles: ${bits}`;
+                guardarDatosSesion(usuario, bits);
+            } else {
+                textoGenerado.innerHTML = "Por favor completa todos los campos";
+            }
+        }
+    </script>
+</body>
+</html>

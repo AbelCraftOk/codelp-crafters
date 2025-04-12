@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplicación de Login</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0e6ff;
+        }
+
+        .login-container {
+            text-align: center;
+            padding: 30px;
+            border-radius: 15px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 350px;
+            width: 100%;
+        }
+
+        h2 {
+            color: #6a5acd;
+            margin-bottom: 20px;
+        }
+
+        input,
+        button {
+            margin: 10px 0;
+            padding: 10px;
+            width: 100%;
+            border: 1px solid #d3d3d3;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #6a5acd;
+        }
+
+        button {
+            background-color: #6a5acd;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #5a4aad;
+        }
+
+        #textoGenerado {
+            margin-top: 20px;
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <h2>Bienvenido</h2>
+        <input type="text" id="usuario" name="usuario" placeholder="Usuario/Correo Electrónico">
+        <input type="password" id="contraseña" name="contraseña" placeholder="Contraseña">
+        <button onclick="login()">Iniciar sesión</button>
+        <div id="textoGenerado"></div>
+    </div>
+
+    <script>
+        function login() {
+            var usuario = document.getElementById("usuario").value;
+            var contraseña = document.getElementById("contraseña").value;
+            var textoGenerado = document.getElementById("textoGenerado");
+            if (
+                (usuario === "LoDePedro" && contraseña === "admin") ||
+                (usuario === "Pedro Ojeda" && contraseña === "pedroadmin") ||
+                (usuario === "Profesores" && contraseña === "") ||
+                (usuario === "Alejandro Ojeda" && contraseña === "aleadmin") ||
+                (usuario === "Padres" && contraseña === "") ||
+                (usuario === "Madres" && contraseña === "") ||
+                (usuario === "luciagon2016@gmail.com" && contraseña === "ayeescverano") ||
+                (usuario === "Ayelen Ojeda" && contraseña === "ayeescverano2024") ||
+                (usuario === "Editar Sitio Web" && contraseña === "")
+            ) {
+                textoGenerado.innerHTML = "Inicio de sesión exitoso";
+                window.open("https://sites.google.com/d/1IUUMhnSaV9KUqBNYfz4XeMA8p_Fzjwim/edit?ouid=107321225619694238306&usp=sites_home&ths=true", "_blank");
+            } else {
+                textoGenerado.innerHTML = "Usuario o contraseña incorrectos";
+            }
+        }
+    </script>
+</body>
+
+</html>

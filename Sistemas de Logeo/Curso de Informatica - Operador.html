@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplicación de Login - Curso de Computacion</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #e6f3ff;
+        }
+        .login-container {
+            text-align: center;
+            padding: 30px;
+            border-radius: 15px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 350px;
+            width: 100%;
+        }
+        h2 {
+            color: #5d9cec;
+            margin-bottom: 20px;
+        }
+        input, button {
+            margin: 10px 0;
+            padding: 10px;
+            width: 100%;
+            border: 1px solid #d3e0e9;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        input:focus {
+            outline: none;
+            border-color: #5d9cec;
+        }
+        button {
+            background-color: #5d9cec;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #4a89dc;
+        }
+        #textoGenerado {
+            margin-top: 20px;
+            color: #e57373;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Bienvenido al Login de Operador del Curso de Computacion</h2>
+        <input type="text" id="usuario" name="usuario" placeholder="Usuario/Correo Electrónico">
+        <input type="password" id="contraseña" name="contraseña" placeholder="Contraseña">
+        <button onclick="login()">Iniciar sesión</button>
+        <div id="textoGenerado"></div>
+    </div>
+
+    <script>
+        function login() {
+            const usuario = document.getElementById('usuario').value;
+            const contraseña = document.getElementById('contraseña').value;
+            
+            const cuentas = [
+                { usuario: "LoDePedro", contraseña: "admin" },
+                { usuario: "Pedro Ojeda", contraseña: "pedroadmin" },
+                { usuario: "Alejandro Ojeda", contraseña: "aleadmin" },
+            ];
+            
+            const cuentaValida = cuentas.find(cuenta => 
+                cuenta.usuario === usuario && cuenta.contraseña === contraseña
+            );
+            
+            if (cuentaValida) {
+                alert("Inicio de sesión exitoso. Abriendo el sitio web en una nueva pestaña...");
+                window.open("https://sites.google.com/d/1GGoQPTe60zWpCMczXu9jlhW1AyoQ_7VV/edit?ouid=107321225619694238306&usp=sites_home&ths=true");
+            } else {
+                alert("Usuario o contraseña incorrectos. Por favor, intente de nuevo.");
+                document.getElementById('textoGenerado').textContent = "Inicio de sesión fallido. Verifique sus credenciales.";
+            }
+        }
+    </script>
+</body>
+</html>
