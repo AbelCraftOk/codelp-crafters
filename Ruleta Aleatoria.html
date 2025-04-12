@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruleta Aleatoria</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        button {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ruleta Aleatoria</h1>
+    <div id="entradaOpciones">
+        <p>Ingrese las opciones para la ruleta:</p>
+        <input type="text" id="opcion" placeholder="Ingrese una opción">
+        <button onclick="agregarOpcion()">Agregar opción</button>
+        <button onclick="terminarEntrada()">Terminar entrada</button>
+    </div>
+    <div id="opciones"></div>
+    <div id="resultado" style="display: none;">
+        <p>Girando la ruleta...</p>
+        <button onclick="girarRuleta()">Girar ruleta</button>
+        <p id="resultadoFinal"></p>
+    </div>
+
+    <script>
+        let opciones = [];
+
+        function agregarOpcion() {
+            const opcion = document.getElementById('opcion').value.trim();
+            if (opcion) {
+                opciones.push(opcion);
+                document.getElementById('opcion').value = '';
+                actualizarOpciones();
+            }
+        }
+
+        function actualizarOpciones() {
+            document.getElementById('opciones').innerHTML = '<p>Opciones ingresadas: ' + opciones.join(', ') + '</p>';
+        }
+
+        function terminarEntrada() {
+            if (opciones.length > 0) {
+                document.getElementById('entradaOpciones').style.display = 'none';
+                document.getElementById('resultado').style.display = 'block';
+            } else {
+                alert('No se ingresaron opciones. La ruleta no puede girar.');
+            }
+        }
+
+        function girarRuleta() {
+            const resultado = opciones[Math.floor(Math.random() * opciones.length)];
+            document.getElementById('resultadoFinal').innerHTML = 'La ruleta ha elegido: ' + resultado;
+        }
+    </script>
+</body>
+</html>
