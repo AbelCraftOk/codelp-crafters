@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TA-TE-TI Mejorado</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-gap: 10px;
+            margin-bottom: 20px;
+        }
+        .cell {
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 48px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .cell:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+        .score {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+        }
+        .reset-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .reset-btn:hover {
+            background: #45a049;
+        }
+        @keyframes win-animation {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        .win {
+            animation: win-animation 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Tres en línea</h1>
+        <div class="score">
+            <span>Jugador X: <span id="scoreX">0</span></span>
+            <span>Jugador O: <span id="scoreO">0</span></span>
+        </div>
+        <div class="board" id="board">
+            <div class="cell" data-index="0"></div>
+            <div class="cell" data-index="1"></div>
+            <div class="cell" data-index="2"></div>
+            <div class="cell" data-index="3"></div>
+            <div class="cell" data-index="4"></div>
+            <div class="cell" data-index="5"></div>
+            <div class="cell" data-index="6"></div>
+            <div class="cell" data-index="7"></div>
+            <div class="cell" data-index="8"></div>
+        </div>
+        <button class="reset-btn" onclick="resetGame()">Reiniciar Juego</button>
+    </div>
+
+    <script>
+        let currentPlayer = 'X';
+        const cells = document.querySelectorAll('.cell');
+        const winningCombos = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8], // filas
+            [0, 3, 6], [1, 4, 7], [2, 5, 8], // columnas
+            [0, 4, 8], [2, 4, 6] // diagonales
+        ];
+        let gameEnded = false;
+        let scores = {X: 0, O: 0};
+
+        cells.forEach(cell => {
+            cell.addEventListener('click', () => cellClicked(cell));
+        });
+
+        function cellClicked(clickedCell) {
+            const cellIndex = clickedCell.dataset.index;
+
+            if (clickedCell.innerText === '' && !gameEnded) {
+                clickedCell.innerText = currentPlayer;
+                if (checkWinner(currentPlayer)) {
+                    highlightWinningCells();
+                    updateScore(currentPlayer);
+                    setTimeout(() => {
+                        alert(`¡Felicidades ${currentPlayer} has ganado esta ronda! By P.O`);
+                        resetBoard();
+                    }, 100);
+                    return;
+                }
+                if (checkDraw()) {
+                    setTimeout(() => {
+                        alert("¡Hay un empate! By P.O");
+                        resetBoard();
+                    }, 100);
+                    return;
+                }
+                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            }
+        }
+
+        function checkWinner(player) {
+            return winningCombos.some(combo => {
+                return combo.every(index => {
+                    return cells[index].innerText === player;
+                });
+            });
+        }
+
+        function checkDraw() {
+            return [...cells].every(cell => cell.innerText !== '');
+        }
+
+        function highlightWinningCells() {
+            winningCombos.forEach(combo => {
+                if (combo.every(index => cells[index].innerText === currentPlayer)) {
+                    combo.forEach(index => cells[index].classList.add('win'));
+                }
+            });
+        }
+
+        function updateScore(player) {
+            scores[player]++;
+            document.getElementById(`score${player}`).innerText = scores[player];
+        }
+
+        function resetBoard() {
+            cells.forEach(cell => {
+                cell.innerText = '';
+                cell.classList.remove('win');
+            });
+            gameEnded = false;
+        }
+
+        function resetGame() {
+            resetBoard();
+            scores = {X: 0, O: 0};
+            document.getElementById('scoreX').innerText = '0';
+            document.getElementById('scoreO').innerText = '0';
+            currentPlayer = 'X';
+        }
+    </script>
+</body>
+</html>
+    
