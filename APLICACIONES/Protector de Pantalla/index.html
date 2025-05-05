@@ -22,6 +22,14 @@
             background-repeat: no-repeat;
         }
 
+        .button {
+            width: 40px;
+            height: 40px;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+        }
+
         #info {
             position: absolute;
             bottom: 20px;
@@ -48,6 +56,7 @@
         <div id="info">
             <div id="temp-actual">Cargando temperatura...</div>
             <div id="time-actual">Cargando hora...</div>
+            <button class="button" onclick="enableFullscreen()">📺</button>
         </div>
     </div>
     <script>
@@ -62,9 +71,6 @@
             const randomImage = images[Math.floor(Math.random() * images.length)];
             document.getElementById('protector').style.backgroundImage = `url(${randomImage})`;
         }
-
-        changeBackground();
-        setInterval(changeBackground, 30000);
 
         async function fetchInfo() {
             try {
@@ -87,10 +93,25 @@
             }
         }
 
+        function enableFullscreen() {
+            const elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) { // Safari
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) { // IE11
+                elem.msRequestFullscreen();
+            }
+        }
 
-        // Actualizar la información cada 0.1 segundos
-        fetchInfo();
-        setInterval(fetchInfo, 1000);
+        // Enable fullscreen mode on load
+        window.onload = () => {
+            enableFullscreen();
+            changeBackground();
+            fetchInfo();
+            setInterval(changeBackground, 30000);
+            setInterval(fetchInfo, 1000);
+        };
     </script>
 </body>
 </html>
